@@ -1,6 +1,3 @@
-import express from "express";
-import helmet from "helmet";
-
 const express = require('express');
 require('express-async-errors');
 const morgan = require('morgan');
@@ -9,22 +6,19 @@ const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
+// backend/app.js
+const routes = require('./routes');
+
+
 const { environment } = require('./config');
 const isProduction = environment === 'production';
 
 const app = express();
 
 app.use(morgan('dev'));
-
 app.use(cookieParser());
 app.use(express.json());
 
-// Use Helmet!
-app.use(helmet());
-
-app.get("/", (req, res) => {
-  res.send("Hello world!");
-});
 
 // Security Middleware
 if (!isProduction) {
@@ -49,19 +43,47 @@ app.use(
     }
   })
 );
-
-// backend/app.js
-const routes = require('./routes');
-
-// ...
-
 app.use(routes); // Connect all the routes
-
-
-
-app.listen(8000);
-
+// backend/app.js
+// ...
+// Catch unhandled requests and forward to error handler.
+app.use((_req, _res, next) => {
+  const err = new Error("The requested resource couldn't be found.");
+  err.title = "Resource Not Found";
+  err.errors = { message: "The requested resource couldn't be found." };
+  err.status = 404;
+  next(err);
+});
 
 // backend/app.js
 // ...
+const { ValidationError } = require('sequelize');
+
+// ...
+
+// Process sequelize errors
+app.use((err, _req, _res, next) => {
+  // check if error is a Sequelize error:
+  if (err instanceof ValidationError) {
+    let errors = {};
+    for (let error of err.errors) {
+      errors[error.path] = error.message;
+    }
+    err.title = 'Validation error';
+    err.errors = errors;
+  }
+  next(err);
+});
+
+app.use((err, _req, res, _next) => {
+  res.status(err.status || 500);
+  console.error(err);
+  res.json({
+    title: err.title || 'Server Error',
+    message: err.message,
+    errors: err.errors,
+    stack: isProduction ? null : err.stack
+  });
+});
+
 module.exports = app;
