@@ -63,7 +63,8 @@ router.get('/api/spots', async (req, res) => {
 
 router.post('/api/spots', async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
-  // fetch
+  // fetch(ownerId)
+  const { ownerId } = req.body
   const spot = await Spot.create({
     // ownerId,
     address,
