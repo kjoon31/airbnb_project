@@ -18,36 +18,30 @@ router.get('/hello/world', function(req, res) {
 });
 
 // Add a XSRF-TOKEN cookie
-router.get("/api/csrf/restore", (req, res) => {
-  const csrfToken = req.csrfToken();
-  res.cookie("XSRF-TOKEN", csrfToken);
-  res.status(200).json({
-    'XSRF-Token': csrfToken
-  });
-});
 
-router.post('/api/users', async ( req, res ) => {
-  const { username, email, password } = req.body;
-  const user = await User.create({
-    username,
-    email,
-    hashedPassword: bcrypt.hashSync(password, salt)
-  })
-  // console.log(user)
 
-  return res.json({
-    id: user.id,
-    firstName: null,
-    lastName: null,
-    email: user.email
-  })
-  // res.status(500)
-  /*
-  Successful response includes newly created id, firstName, lastName, and email
-  Error response with status 500 is given when the specified email or username already exists
-  Error response with status 400 is given when body validations for the email, firstName, or lastName are violated
-  */
-})
+// router.post('/api/users', async ( req, res ) => {
+//   const { username, email, password } = req.body;
+//   const user = await User.create({
+//     username,
+//     email,
+//     hashedPassword: bcrypt.hashSync(password, salt)
+//   })
+//   // console.log(user)
+
+//   return res.json({
+//     id: user.id,
+//     firstName: null,
+//     lastName: null,
+//     email: user.email
+//   })
+//   // res.status(500)
+//   /*
+//   Successful response includes newly created id, firstName, lastName, and email
+//   Error response with status 500 is given when the specified email or username already exists
+//   Error response with status 400 is given when body validations for the email, firstName, or lastName are violated
+//   */
+// })
 
 
 router.post('/api/session', async (req, res) => {
@@ -140,10 +134,6 @@ router.get('/api/bookings/current', async (req, res) => {
 
 })
 
-router.get('/api/spots/:spotId/bookings', async (req, res) => {
-
-})
-
 router.put('/api/bookings/:bookingId', async (req, res) => {
 
 })
@@ -154,6 +144,7 @@ router.delete('/api/spots-images/:id', async (req, res) => {
 router.delete('/api/review-images/:id', async (req, res) => {
 
 })
-// router.use('/api', apiRouter);
+
+router.use('/api', apiRouter);
 // ...
 module.exports = router;

@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
+
 const { restoreUser } = require("../../utils/auth.js");
 
 // Connect restoreUser middleware to the API router
@@ -16,5 +17,17 @@ router.use('/users', usersRouter);
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
 });
+
+router.get("/csrf/restore", (req, res) => {
+  const csrfToken = req.csrfToken();
+  res.cookie("XSRF-TOKEN", csrfToken);
+  res.status(200).json({
+    'XSRF-Token': csrfToken
+  });
+});
+
+// router.get('/spots/:spotId/bookings', async (req, res) => {
+
+// })
 
 module.exports = router;
