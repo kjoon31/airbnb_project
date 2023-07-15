@@ -3,8 +3,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    queryInterface.addColumn('Users', 'firstName', { type: DataTypes.STRING });
-    queryInterface.addColumn('Users', 'lastName', { type: DataTypes.STRING });
+    // queryInterface.addColumn('Users', 'firstName', { type: DataTypes.STRING });
+    // queryInterface.addColumn('Users', 'lastName', { type: DataTypes.STRING });
   },
 
   async down (queryInterface, Sequelize) {
