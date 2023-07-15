@@ -26,6 +26,8 @@ router.get("/csrf/restore", (req, res) => {
   });
 });
 
+
+
 // router.get('/spots/:spotId/bookings', async (req, res) => {
 
 // })
