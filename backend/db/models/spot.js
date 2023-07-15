@@ -10,7 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // parent
+      Spot.hasMany(models.Booking)
+      Spot.hasMany(models.Review)
+      Spot.hasMany(models.SpotImage)
+      // child
+      models.Booking.belongsTo(Spot)
+      models.Review.belongsTo(Spot)
+      models.SpotImage.belongsTo(Spot)
     }
   }
   Spot.init({

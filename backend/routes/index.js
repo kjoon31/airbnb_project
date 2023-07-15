@@ -34,6 +34,7 @@ router.post('/api/users', async ( req, res ) => {
     hashedPassword: bcrypt.hashSync(password, salt)
   })
   // console.log(user)
+
   return res.json({
     id: user.id,
     firstName: null,
