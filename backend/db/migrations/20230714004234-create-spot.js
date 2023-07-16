@@ -1,5 +1,19 @@
 'use strict';
+
+const { options } = require('../../routes/api/spots');
+
 /** @type {import('sequelize-cli').Migration} */
+// module.exports = {
+//   async up (queryInterface, Sequelize) {
+//     await queryInterface.addColumn(options, 'firstName', { type: DataTypes.STRING(30)});
+//     await queryInterface.addColumn(options, 'lastName', { type: DataTypes.STRING(30)});
+//   },
+
+//   async down (queryInterface, Sequelize) {
+//     await queryInterface.removeColumn(options, 'firstname')
+//   }
+// };
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Spots', {
@@ -58,7 +72,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
-    });
+    }, options);
+
+
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Spots');

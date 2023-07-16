@@ -11,13 +11,19 @@ module.exports = (sequelize, DataTypes) => {
       // child
       models.Review.belongsTo(User)
       models.Booking.belongsTo(User)
-      models.Spot.belongsTo(User)
+      models.Spot.belongsTo(User, { targetKey: "id", foreignKey: "ownerId"})
 
     }
   };
 
   User.init(
     {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
       username: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -30,14 +36,14 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       },
-      // firstName:{
-      //   type: DataTypes.STRING,
-      //   allowNull: true
-      // },
-      // lastName:{
-      //   type: DataTypes.STRING,
-      //   allowNull: true
-      // },
+      firstName:{
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      lastName:{
+        type: DataTypes.STRING,
+        allowNull: true
+      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
