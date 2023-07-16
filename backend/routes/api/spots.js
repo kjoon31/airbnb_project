@@ -1,15 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { Spot } = require('../../db/models')
+const { User, Spot } = require('../../db/models')
 
 
 router.post('/', async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price } = req.body;
-  // fetch(ownerId)
-  console.log(req.user)
-  // const { ownerId } = req.body
+  // const { id, ownerId, createdAt, updatedAt } = a;
+  // const user = await User.create({
+  //   id,
+  //   createdAt,
+  //   updatedAt
+  // })
+  // console.log(user)
+  const user = req.user;
+  // console.log(user)
   const spot = await Spot.create({
-    // ownerId,
+    // id,
+    ownerId: user.id,
     address,
     city, 
     state, 
@@ -18,21 +25,26 @@ router.post('/', async (req, res) => {
     lng, 
     name, 
     description, 
-    price
+    price,
+    // createdAt,
+    // updatedAt
   })
-  // return res.json({
-  //   id: spot.id,
-  //   ownerId: null, // the authenticated user's id
-  //   address: spot.address,
-  //   // city:, 
-  //   // state, 
-  //   // country, 
-  //   // lat, 
-  //   // lng, 
-  //   // name, 
-  //   // description, 
-  //   // price
-  // })
+  // console.log(spot)
+  return res.json({
+    id: spot.id,
+    ownerId: spot.ownerId,
+    address,
+    city, 
+    state, 
+    country, 
+    lat, 
+    lng, 
+    name, 
+    description, 
+    price,
+    createdAt: spot.createdAt,
+    updatedAt: spot.updatedAt
+  })
 })
 
 
