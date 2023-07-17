@@ -1,11 +1,11 @@
 // backend/routes/api/session.js
 const express = require('express');
+const router = express.Router();
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
-
-const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
+const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -20,7 +20,7 @@ const validateLogin = [
     .withMessage('Please provide a password.'),
   handleValidationErrors
 ];
-const router = express.Router();
+
 // Log in
 router.post(
   '/',
@@ -69,8 +69,9 @@ router.delete(
 
 router.get(
   '/',
-  (req, res) => {
+  async (req, res) => {
     const { user } = req;
+    console.log(user)
     if (user) {
       const safeUser = {
         id: user.id,
