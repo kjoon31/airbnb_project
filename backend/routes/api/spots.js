@@ -151,4 +151,56 @@ router.post("/:id/images", async (req, res) => {
   return res.json(spotImage)
 })
 
+router.get("/current", async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json("User not authenticated");
+  } 
+
+  const spots = await Spot.findAll({
+    where: {
+      ownerId: user.id
+    }
+  })
+
+  let newSpots = [];
+  for (let i = 0; i < spots.length; ++i) {
+    let spot = spots[i];
+
+    let avgRating = 0;
+    let previewImage = null;
+
+    const reviews = await Review.findAll({
+      where: {
+        spotId: spot.id
+      }
+    })
+
+    if (reviews) {
+      reviews.map(review => {
+        avgRating += review.stars;
+      })
+      avgRating /= reviews.length;
+    }
+
+    previewImage = await SpotImage.findOne({
+      where: {
+        preview: true,
+        spotId: spot.id
+      }
+    })
+
+    if (previewImage) previewImage = previewImage.url;
+
+    let newSpot = {
+      ...spot.dataValues,
+      avgRating, 
+      previewImage, 
+    };
+    newSpots = [...newSpots, newSpot];
+  }
+
+  return res.json(newSpots);
+});
+
 module.exports = router;
