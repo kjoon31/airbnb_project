@@ -97,4 +97,21 @@ router.post("/:id/reviews", async (req, res) => {
   })
 })
 
+router.get("/:id/reviews", async (req, res) => {
+  const user = req.user;
+  const spot = await Spot.findByPk(req.params.id);
+  if (spot === null) {
+    return res.status(404).json("Spot does not exist!");
+  }
+
+  const reviews = await Review.findAll({
+    where: {
+      spotId: spot.id,
+      userId: user.id
+    }
+  }) 
+
+  return res.json(reviews)
+})
+
 module.exports = router;
