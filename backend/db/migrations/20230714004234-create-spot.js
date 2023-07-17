@@ -1,5 +1,6 @@
 'use strict';
 
+const { DataTypes } = require('sequelize');
 const { options } = require('../../routes/api/spots');
 
 /** @type {import('sequelize-cli').Migration} */
@@ -13,9 +14,12 @@ const { options } = require('../../routes/api/spots');
 //     await queryInterface.removeColumn(options, 'firstname')
 //   }
 // };
-
+// options.tableName = "Spots";
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // await queryInterface.addColumn(options, 'UserId', {
+    //   type: DataTypes.INTEGER
+    // })
     await queryInterface.createTable('Spots', {
       id: {
         allowNull: false,
@@ -26,7 +30,8 @@ module.exports = {
       ownerId: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Users"
+          model: "Users",
+          key: "id"
         }
       },
       address: {
@@ -73,7 +78,6 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     }, options);
-
 
   },
   async down(queryInterface, Sequelize) {

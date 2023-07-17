@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Spot } = require('../../db/models')
+const { Spot, Review } = require('../../db/models')
 
 
 router.post('/', async (req, res) => {
@@ -35,5 +35,66 @@ router.post('/', async (req, res) => {
   })
 })
 
+router.get('/', async (req,res) => {
+  // const user = req.user
+  const spot = await Spot.findAll({
+    where: {
+      // id,
+      // ownerId: user.id,
+      // address,
+      // city, 
+      // state, 
+      // country, 
+      // lat, 
+      // lng, 
+      // name, 
+      // description, 
+      // price,
+      // createdAt: user.createdAt,
+      // updatedAt: user.updatedAt
+      // previewImage,
+      // avgRating
+    }
+  })
+  return res.json(spot)
+})
+
+router.post("/:id/reviews", async (req, res) => {
+  const user = req.user;
+  const { review, stars } = req.body;
+
+  const spot = await Spot.findByPk(req.params.id);
+  if (spot === null) {
+    return res.status(404).json("Spot does not exist!");
+  }
+
+  const reviews = await Review.findAll({
+    where: {
+      userId: user.id,
+      spotId: spot.id, 
+    }
+  })
+
+  if (reviews.length > 0) {
+    return res.status(403).json("User already has review")
+  }
+
+  const createdReview = await Review.create({
+    spotId: spot.id,
+    userId: user.id,
+    review,
+    stars
+  });
+
+  return res.json({
+    id: createdReview.id,
+    userId: createdReview.userId,
+    spotId: createdReview.spotId,
+    review: createdReview.review,
+    stars: createdReview.stars,
+    createdAt: createdReview.createdAt,
+    updatedAt: createdReview.updatedAt
+  })
+})
 
 module.exports = router;
