@@ -203,4 +203,19 @@ router.get("/current", async (req, res) => {
   return res.json(newSpots);
 });
 
+router.get("/:id", async (req, res) => {
+  let spot = await Spot.findByPk(req.params.id);
+  if (spot === null) {
+    return res.status(404).json("Spot does not exist!");
+  }
+
+  spot = await Spot.findOne({
+    where: {
+      id: req.params.id 
+    },
+    include: SpotImage
+  })
+
+  return res.json(spot)
+})
 module.exports = router;
