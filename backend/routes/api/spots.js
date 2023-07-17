@@ -35,5 +35,28 @@ router.post('/', async (req, res) => {
   })
 })
 
+router.get('/', async (req,res) => {
+  // const user = req.user
+  const spot = await Spot.findAll({
+    where: {
+      // id,
+      // ownerId: user.id,
+      // address,
+      // city, 
+      // state, 
+      // country, 
+      // lat, 
+      // lng, 
+      // name, 
+      // description, 
+      // price,
+      // createdAt: user.createdAt,
+      // updatedAt: user.updatedAt
+      // previewImage,
+      // avgRating
+    }
+  })
+  return res.json(spot)
+})
 
 module.exports = router;
