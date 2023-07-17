@@ -151,6 +151,37 @@ router.post("/:id/images", async (req, res) => {
   return res.json(spotImage)
 })
 
+router.delete('/:id', async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json("User not authenticated");
+  }
+
+  let spot = await Spot.findByPk(req.params.id);
+
+  if (spot === null) {
+    return res.status(404).json("Spot not found!");
+  }
+
+  spot = await Spot.findOne({
+    where: {
+      id: req.params.id,
+      ownerId: user.id
+    }
+  });
+
+  if (spot === null) {
+    return res.status(500).json("Spot does not exist or user not owner of spot!");
+  }
+
+  await Spot.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+})
+
+
 router.get("/current", async (req, res) => {
   const user = req.user;
   if (!user) {
