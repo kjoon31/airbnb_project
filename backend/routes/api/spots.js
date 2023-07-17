@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Spot, Review } = require('../../db/models')
+const { Spot, Review, SpotImage } = require('../../db/models')
 
 
 router.post('/', async (req, res) => {
@@ -117,5 +117,38 @@ router.get('/', async (req,res) => {
     const spot = await Spot.findAll()
     return res.json(spot)
   })
+
+router.post("/:id/images", async (req, res) => {
+  const user = req.user;
+  const { url, preview } = req.body;
+  if (!user) {
+    return res.status(401).json("User not authenticated");
+  }
+
+  let spot = await Spot.findByPk(req.params.id);
+
+  if (spot === null) {
+    return res.status(404).json("Spot not found!");
+  }
+
+  spot = await Spot.findOne({
+    where: {
+      id: req.params.id,
+      ownerId: user.id
+    }
+  });
+
+  if (spot === null) {
+    return res.status(500).json("Spot does not exist or user not owner of spot!");
+  }
+
+  const spotImage = await SpotImage.create({
+    spotId: spot.id,
+    url,
+    preview
+  }) 
+
+  return res.json(spotImage)
+})
 
 module.exports = router;
