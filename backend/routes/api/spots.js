@@ -110,8 +110,12 @@ router.get("/:id/reviews", async (req, res) => {
       userId: user.id
     }
   }) 
-
   return res.json(reviews)
 })
+
+router.get('/', async (req,res) => {
+    const spot = await Spot.findAll()
+    return res.json(spot)
+  })
 
 module.exports = router;
