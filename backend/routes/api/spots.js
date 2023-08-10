@@ -250,4 +250,57 @@ router.get("/:id", async (req, res) => {
 
   return res.json(spot)
 })
+
+//edit spot
+router.put("/:id", async (req, res) => {
+  const user = req.user;
+  let { address, city, state, country, lat, lng, name, description, price } = req.body
+  if (!user) {
+    return res.status(401).json("User not authenticated");
+  }
+
+  let spot = await Spot.findByPk(req.params.id);
+
+  if (spot == null) {
+    return res.status(404).json("Spot not found!");
+  }
+
+  if (spot.ownerId !== user.id) {
+    return res.status(403).json("User is not the owner of the Spot");
+  }
+  const spotData = await Spot.create({
+    ownerId: user.id,
+    address,
+    city, 
+    state, 
+    country, 
+    lat, 
+    lng, 
+    name, 
+    description, 
+    price,
+  })
+
+  if (!spotData) {
+    return res.status(400).json("Spot Data is/are violated")
+  }
+  return res.json({
+    id: spotData.id,
+    ownerId: spotData.ownerId,
+    address,
+    city, 
+    state, 
+    country, 
+    lat, 
+    lng, 
+    name, 
+    description, 
+    price,
+    createdAt: spotData.createdAt,
+    updatedAt: spotData.updatedAt
+  })
+})
+
+
+
 module.exports = router;
